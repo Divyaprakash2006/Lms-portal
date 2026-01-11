@@ -69,7 +69,7 @@ const ResultDetails = () => {
     <div className="container my-5">
 
       {/* Result Summary */}
-      <div className={`card text-center mb-4 shadow ${isPassed ? 'border-success' : 'border-secondary'}`}>
+      <div className={`card text-center mb-4  ${isPassed ? 'border-success' : 'border-secondary'}`}>
         <img
           src={isPassed 
                 ? 'https://cdn-icons-png.flaticon.com/512/5454/5454607.png'

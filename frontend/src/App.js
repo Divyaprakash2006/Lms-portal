@@ -101,6 +101,15 @@ function AppContent() {
             />
 
             <Route
+              path="/results-list"
+              element={
+                <ProtectedRoute>
+                  <ResultsList />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
               path="/results/:id"
               element={
                 <ProtectedRoute>

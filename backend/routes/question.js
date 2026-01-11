@@ -54,20 +54,27 @@ router.post('/import/:examId', protect, authorize('trainer', 'admin'), upload.si
     // Convert buffer to string
     const xmlContent = req.file.buffer.toString('utf-8');
 
+    console.log('📥 Starting XML import for exam:', examId);
+    console.log('📄 File size:', req.file.size, 'bytes');
+
     // Import questions
     const results = await MoodleImportService.importQuestionsFromXML(xmlContent, examId);
 
+    console.log('✅ Import completed:', results);
+
+    // Return detailed results
     res.status(200).json({
       success: true,
-      message: 'Import completed',
+      message: `Import completed: ${results.success} succeeded, ${results.failed} failed out of ${results.total} questions`,
       data: results
     });
 
   } catch (error) {
-    console.error('Import error:', error);
+    console.error('❌ Import error:', error);
     res.status(500).json({
       success: false,
-      message: error.message || 'Failed to import questions'
+      message: error.message || 'Failed to import questions',
+      details: error.stack
     });
   }
 });
