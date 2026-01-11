@@ -249,31 +249,107 @@ const TakeExam = () => {
           </h3>
 
           {question.questionType === 'mcq' || question.questionType === 'true-false' ? (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-              {question.options.map((option, optIndex) => (
-                <label key={optIndex} style={{
-                  display: 'flex',
-                  alignItems: 'center',
-                  padding: '15px',
-                  background: answers[question._id] === option ? '#fff' : '#fff',
-                  border: answers[question._id] === option ? '2px solid #fff' : '2px solid #fff',
-                  borderRadius: '8px',
-                  cursor: 'pointer',
-                  transition: 'all 0.2s'
-                }}>
-                  <input
-                    type="radio"
-                    name={`question-${question._id}`}
-                    value={option}
-                    checked={answers[question._id] === option}
-                    onChange={(e) => handleAnswerChange(question._id, e.target.value)}
-                    style={{ marginRight: '12px', width: '20px', height: '20px' }}
-                  />
-                  <span style={{ flex: 1 }}>
-                    {String.fromCharCode(65 + optIndex)}. {option}
-                  </span>
-                </label>
-              ))}
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              {question.options.map((option, optIndex) => {
+                const isSelected = answers[question._id] === option;
+                return (
+                  <label 
+                    key={optIndex} 
+                    style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      padding: '16px 20px',
+                      background: isSelected ? '#f0f4ff' : '#f8f9fa',
+                      border: isSelected ? '2px solid #667eea' : '2px solid #e0e0e0',
+                      borderRadius: '10px',
+                      cursor: 'pointer',
+                      transition: 'all 0.3s ease',
+                      boxShadow: isSelected ? '0 2px 8px rgba(102, 126, 234, 0.2)' : 'none'
+                    }}
+                    onMouseEnter={(e) => {
+                      if (!isSelected) {
+                        e.currentTarget.style.background = '#f0f0f0';
+                        e.currentTarget.style.borderColor = '#667eea';
+                        e.currentTarget.style.transform = 'translateX(5px)';
+                      }
+                    }}
+                    onMouseLeave={(e) => {
+                      if (!isSelected) {
+                        e.currentTarget.style.background = '#f8f9fa';
+                        e.currentTarget.style.borderColor = '#e0e0e0';
+                        e.currentTarget.style.transform = 'translateX(0)';
+                      }
+                    }}
+                  >
+                    <div style={{
+                      position: 'relative',
+                      width: '24px',
+                      height: '24px',
+                      marginRight: '15px',
+                      flexShrink: 0
+                    }}>
+                      <input
+                        type="radio"
+                        name={`question-${question._id}`}
+                        value={option}
+                        checked={isSelected}
+                        onChange={(e) => handleAnswerChange(question._id, e.target.value)}
+                        style={{
+                          position: 'absolute',
+                          opacity: 0,
+                          width: '100%',
+                          height: '100%',
+                          cursor: 'pointer'
+                        }}
+                      />
+                      <div style={{
+                        width: '24px',
+                        height: '24px',
+                        borderRadius: '50%',
+                        border: isSelected ? '2px solid #667eea' : '2px solid #999',
+                        background: 'white',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        transition: 'all 0.3s ease'
+                      }}>
+                        {isSelected && (
+                          <div style={{
+                            width: '12px',
+                            height: '12px',
+                            borderRadius: '50%',
+                            background: '#667eea'
+                          }} />
+                        )}
+                      </div>
+                    </div>
+                    
+                    <span style={{
+                      display: 'inline-block',
+                      padding: '4px 10px',
+                      marginRight: '12px',
+                      background: isSelected ? '#667eea' : '#e0e0e0',
+                      color: isSelected ? 'white' : '#666',
+                      borderRadius: '6px',
+                      fontWeight: '600',
+                      fontSize: '14px',
+                      minWidth: '32px',
+                      textAlign: 'center'
+                    }}>
+                      {String.fromCharCode(65 + optIndex)}
+                    </span>
+                    
+                    <span style={{ 
+                      flex: 1,
+                      fontSize: '16px',
+                      color: isSelected ? '#333' : '#555',
+                      fontWeight: isSelected ? '500' : '400'
+                    }}>
+                      {option}
+                    </span>
+                  </label>
+                );
+              })}
             </div>
           ) : (
             <textarea
