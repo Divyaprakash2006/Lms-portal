@@ -15,9 +15,12 @@ const ResultsList = () => {
       try {
         setLoading(true);
         const response = await getSubmissionsByStudent(user._id);
-        setSubmissions(response.data.data);
+        const submissionData = response.data.data || response.data;
+        setSubmissions(Array.isArray(submissionData) ? submissionData : []);
       } catch (err) {
+        console.error('Fetch results error:', err);
         setError(err.response?.data?.message || 'Failed to load results');
+        setSubmissions([]);
       } finally {
         setLoading(false);
       }

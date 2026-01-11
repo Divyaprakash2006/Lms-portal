@@ -20,9 +20,10 @@ const Dashboard = () => {
   const fetchStudentReports = async () => {
     try {
       const res = await axios.get('/api/reports'); // backend API
-      setReports(res.data);
+      setReports(Array.isArray(res.data) ? res.data : []);
     } catch (error) {
       console.error('Failed to fetch reports', error);
+      setReports([]);
     }
   };
 

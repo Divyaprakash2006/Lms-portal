@@ -17,14 +17,16 @@ const StudentDashboard = () => {
             const token = localStorage.getItem('token');
             // Using the route I saw in examRoutes: router.get('/student', protect, getStudentExams);
             // Backend URL context: /api/exams/student
-            const res = await axios.get('http://localhost:5000/api/exams/student', {
+            const res = await axios.get('https://lms-portal-u9ze.vercel.app/api/exams/student', {
                 headers: { Authorization: `Bearer ${token}` }
             });
             // Handle the standardized response format I added earlier: { success: true, count: N, data: [...] }
             // Or fallback if it returns raw array (the controller was updated to return standard JSON)
-            setExams(res.data.data || res.data);
+            const examData = res.data.data || res.data;
+            setExams(Array.isArray(examData) ? examData : []);
         } catch (error) {
             console.error('Error fetching exams:', error);
+            setExams([]);
         } finally {
             setLoading(false);
         }

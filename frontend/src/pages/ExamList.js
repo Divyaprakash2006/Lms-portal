@@ -16,9 +16,11 @@ const ExamList = () => {
     try {
       setLoading(true);
       const response = await getAllExams();
-      setExams(response.data.data);
+      setExams(Array.isArray(response.data.data) ? response.data.data : []);
     } catch (err) {
+      console.error('Fetch exams error:', err);
       setError('Failed to fetch exams');
+      setExams([]);
     } finally {
       setLoading(false);
     }
@@ -30,7 +32,7 @@ const ExamList = () => {
 
     try {
       const token = localStorage.getItem('token');
-      await axios.delete(`http://localhost:5000/api/exams/${id}`, {
+      await axios.delete(`https://lms-portal-u9ze.vercel.app/api/exams/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`
         }
