@@ -1,0 +1,31 @@
+.feature-slider {
+  display: flex;
+  width: max-content;
+  animation: slideLeft 20s linear infinite;
+}
+
+.feature-card {
+  min-width: 300px;
+  max-width: 300px;
+  flex-shrink: 0;
+}
+
+.card-img-top {
+  height: 180px;
+  
+  object-fit: cover;
+}
+
+@keyframes slideLeft {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+
+/* Pause on hover */
+.feature-slider:hover {
+  animation-play-state: paused;
+}

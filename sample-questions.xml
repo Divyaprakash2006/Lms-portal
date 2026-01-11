@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<quiz>
+  <!-- Multiple Choice Question -->
+  <question type="multichoice">
+    <name>
+      <text>JavaScript Data Types</text>
+    </name>
+    <questiontext format="html">
+      <text><![CDATA[<p>Which of the following is NOT a primitive data type in JavaScript?</p>]]></text>
+    </questiontext>
+    <defaultgrade>1</defaultgrade>
+    <answer fraction="0" format="plain_text">
+      <text>String</text>
+    </answer>
+    <answer fraction="0" format="plain_text">
+      <text>Number</text>
+    </answer>
+    <answer fraction="100" format="plain_text">
+      <text>Array</text>
+    </answer>
+    <answer fraction="0" format="plain_text">
+      <text>Boolean</text>
+    </answer>
+  </question>
+
+  <!-- True/False Question -->
+  <question type="truefalse">
+    <name>
+      <text>JavaScript Hoisting</text>
+    </name>
+    <questiontext format="html">
+      <text><![CDATA[<p>JavaScript hoisting allows you to use variables before they are declared.</p>]]></text>
+    </questiontext>
+    <defaultgrade>1</defaultgrade>
+    <answer fraction="100" format="plain_text">
+      <text>true</text>
+    </answer>
+    <answer fraction="0" format="plain_text">
+      <text>false</text>
+    </answer>
+  </question>
+
+  <!-- Multiple Choice Question -->
+  <question type="multichoice">
+    <name>
+      <text>React Hooks</text>
+    </name>
+    <questiontext format="html">
+      <text><![CDATA[<p>Which React Hook is used for side effects?</p>]]></text>
+    </questiontext>
+    <defaultgrade>2</defaultgrade>
+    <answer fraction="0" format="plain_text">
+      <text>useState</text>
+    </answer>
+    <answer fraction="100" format="plain_text">
+      <text>useEffect</text>
+    </answer>
+    <answer fraction="0" format="plain_text">
+      <text>useContext</text>
+    </answer>
+    <answer fraction="0" format="plain_text">
+      <text>useRef</text>
+    </answer>
+  </question>
+
+  <!-- Short Answer Question -->
+  <question type="shortanswer">
+    <name>
+      <text>HTTP Methods</text>
+    </name>
+    <questiontext format="html">
+      <text><![CDATA[<p>What HTTP method is used to retrieve data from a server?</p>]]></text>
+    </questiontext>
+    <defaultgrade>1</defaultgrade>
+    <answer fraction="100" format="plain_text">
+      <text>GET</text>
+    </answer>
+  </question>
+
+  <!-- Multiple Choice Question -->
+  <question type="multichoice">
+    <name>
+      <text>Database Normalization</text>
+    </name>
+    <questiontext format="html">
+      <text><![CDATA[<p>What is the main purpose of database normalization?</p>]]></text>
+    </questiontext>
+    <defaultgrade>2</defaultgrade>
+    <answer fraction="0" format="plain_text">
+      <text>To increase database size</text>
+    </answer>
+    <answer fraction="100" format="plain_text">
+      <text>To reduce data redundancy</text>
+    </answer>
+    <answer fraction="0" format="plain_text">
+      <text>To slow down queries</text>
+    </answer>
+    <answer fraction="0" format="plain_text">
+      <text>To add more tables</text>
+    </answer>
+  </question>
+
+  <!-- True/False Question -->
+  <question type="truefalse">
+    <name>
+      <text>REST API</text>
+    </name>
+    <questiontext format="html">
+      <text><![CDATA[<p>REST APIs are stateless, meaning the server does not store client context between requests.</p>]]></text>
+    </questiontext>
+    <defaultgrade>1</defaultgrade>
+    <answer fraction="100" format="plain_text">
+      <text>true</text>
+    </answer>
+    <answer fraction="0" format="plain_text">
+      <text>false</text>
+    </answer>
+  </question>
+</quiz>
