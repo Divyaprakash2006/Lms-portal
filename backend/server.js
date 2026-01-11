@@ -39,7 +39,7 @@ app.use('/api/auth', require('./routes/authRoutes'));
 app.use('/api/users', require('./routes/userRoutes'));
 
 // Exams + assignment logic
-app.use('/api/exams', require('./routes/examRoutes'));
+app.use('/api/exams', require('./routes/exam'));
 
 // Questions
 app.use('/api/questions', require('./routes/question'));
