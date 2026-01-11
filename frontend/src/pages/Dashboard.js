@@ -19,8 +19,12 @@ const Dashboard = () => {
 
   const fetchStudentReports = async () => {
     try {
-      const res = await axios.get('/api/reports'); // backend API
-      setReports(Array.isArray(res.data) ? res.data : []);
+      const token = localStorage.getItem('token');
+      const res = await axios.get('https://lms-portal-u9ze.vercel.app/api/reports', {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      const reportData = res.data.data || res.data;
+      setReports(Array.isArray(reportData) ? reportData : []);
     } catch (error) {
       console.error('Failed to fetch reports', error);
       setReports([]);
@@ -59,18 +63,20 @@ const Dashboard = () => {
           <table className="table table-hover mb-0">
             <thead className="table-light">
               <tr>
-                <th>Name</th>
+                <th>Student Name</th>
                 <th>Exam</th>
                 <th>Score</th>
+                <th>Percentage</th>
                 <th>Status</th>
+                <th>Date</th>
               </tr>
             </thead>
 
             <tbody>
               {reports.length === 0 ? (
                 <tr>
-                  <td colSpan="4" className="text-center text-muted py-4">
-                    No reports available
+                  <td colSpan="6" className="text-center text-muted py-4">
+                    No student submissions yet
                   </td>
                 </tr>
               ) : (
@@ -78,15 +84,16 @@ const Dashboard = () => {
                   <tr key={report._id}>
                     <td>{report.studentName}</td>
                     <td>{report.examTitle}</td>
-                    <td>{report.score}%</td>
+                    <td>{report.score}/{report.totalMarks}</td>
+                    <td>{report.percentage.toFixed(2)}%</td>
                     <td>
                       <span
-                        className={`badge ${report.score >= 50 ? 'bg-success' : 'bg-danger'
-                          }`}
+                        className={`badge ${report.status === 'pass' ? 'bg-success' : 'bg-danger'}`}
                       >
-                        {report.score >= 50 ? 'Pass' : 'Fail'}
+                        {report.status === 'pass' ? 'Pass' : 'Fail'}
                       </span>
                     </td>
+                    <td>{new Date(report.createdAt).toLocaleDateString()}</td>
                   </tr>
                 ))
               )}

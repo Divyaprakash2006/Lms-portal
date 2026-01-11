@@ -47,8 +47,8 @@ app.use('/api/questions', require('./routes/question'));
 // Submissions
 app.use('/api/submissions', require('./routes/submission'));
 
-// Reports (optional - commented out due to missing Report model)
-// app.use('/api/reports', require('./routes/reportRoutes'));
+// Reports
+app.use('/api/reports', require('./routes/reportRoutes'));
 
 /* ======================
    ERROR HANDLER

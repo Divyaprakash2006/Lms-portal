@@ -3,6 +3,8 @@ const router = express.Router();
 const Submission = require('../models/Submission');
 const Question = require('../models/Question');
 const Exam = require('../models/Exam');
+const Report = require('../models/Report');
+const User = require('../models/User');
 
 /**
  * Evaluate submission automatically
@@ -211,6 +213,22 @@ router.post('/', async (req, res) => {
     const populatedSubmission = await Submission.findById(submission._id)
       .populate('examId', 'title subject totalMarks passingMarks')
       .populate('studentId', 'name email');
+
+    // Get student details for report
+    const student = await User.findById(studentId);
+
+    // Automatically create report for trainer dashboard
+    await Report.create({
+      submissionId: submission._id,
+      studentId: studentId,
+      examId: examId,
+      studentName: student.name,
+      examTitle: exam.title,
+      score: evaluation.score,
+      totalMarks: evaluation.totalMarks,
+      percentage: evaluation.percentage,
+      status: isPassed ? 'pass' : 'fail'
+    });
 
     res.status(201).json({
       success: true,

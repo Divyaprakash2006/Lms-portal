@@ -110,7 +110,7 @@ const ResultDetails = () => {
       </div>
 
       {/* Performance Analysis */}
-      <div className="card mb-4 shadow-sm">
+      <div className="card mb-4 ">
         <div className="card-body">
           <h4 className="card-title mb-3">Performance Analysis</h4>
           <div className="row text-center mb-3">
@@ -147,7 +147,7 @@ const ResultDetails = () => {
 
       {/* Answer Review */}
       {submission.detailedAnswers?.length > 0 && (
-        <div className="card mb-4 shadow-sm">
+        <div className="card mb-4 ">
           <div className="card-body">
             <h4 className="card-title mb-3">Answer Review</h4>
             {submission.detailedAnswers.map((answer, index) => (

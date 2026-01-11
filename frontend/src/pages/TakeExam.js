@@ -255,8 +255,8 @@ const TakeExam = () => {
                   display: 'flex',
                   alignItems: 'center',
                   padding: '15px',
-                  background: answers[question._id] === option ? '#e7f3ff' : '#f8f9fa',
-                  border: answers[question._id] === option ? '2px solid #667eea' : '2px solid #ddd',
+                  background: answers[question._id] === option ? '#fff' : '#fff',
+                  border: answers[question._id] === option ? '2px solid #fff' : '2px solid #fff',
                   borderRadius: '8px',
                   cursor: 'pointer',
                   transition: 'all 0.2s'
@@ -300,7 +300,7 @@ const TakeExam = () => {
         background: 'white',
         padding: '20px 30px',
         borderRadius: '15px',
-        boxShadow: '0 5px 20px rgba(0,0,0,0.1)',
+      
         textAlign: 'center'
       }}>
         <p style={{ marginBottom: '15px', color: '#666' }}>
@@ -311,8 +311,8 @@ const TakeExam = () => {
           disabled={submitting || Object.keys(answers).length === 0}
           style={{
             padding: '15px 50px',
-            background: submitting ? '#6c757d' : 'linear-gradient(135deg, #667eea 0%, #764ba2 100%)',
-            color: 'white',
+            background: submitting ? '#6c757d' : 'linear-gradient(135deg, #fff 0%, #fff 100%)',
+            color: 'black',
             border: 'none',
             borderRadius: '8px',
             fontSize: '1.1rem',

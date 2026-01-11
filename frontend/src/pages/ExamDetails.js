@@ -172,7 +172,7 @@ const ExamDetails = () => {
         background: 'white',
         padding: '30px',
         borderRadius: '15px',
-        boxShadow: '0 5px 20px rgba(0,0,0,0.1)',
+        
         marginBottom: '30px'
       }}>
         <div style={{ 
