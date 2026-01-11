@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { getSubmissionsByStudent } from '../services/api';
+import { getSubmissionsByStudent, getAllSubmissions } from '../services/api';
 import { AuthContext } from '../context/AuthContext';
 
 const ResultsList = () => {
@@ -9,12 +9,17 @@ const ResultsList = () => {
   const [submissions, setSubmissions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  
+  const isTrainer = user?.role === 'trainer' || user?.role === 'admin';
 
   useEffect(() => {
     const fetchResults = async () => {
       try {
         setLoading(true);
-        const response = await getSubmissionsByStudent(user._id);
+        // Trainers see all results, students see only their own
+        const response = isTrainer 
+          ? await getAllSubmissions()
+          : await getSubmissionsByStudent(user._id);
         const submissionData = response.data.data || response.data;
         setSubmissions(Array.isArray(submissionData) ? submissionData : []);
       } catch (err) {
@@ -27,7 +32,7 @@ const ResultsList = () => {
     };
 
     if (user) fetchResults();
-  }, [user]);
+  }, [user, isTrainer]);
 
   if (loading) {
     return (
@@ -52,15 +57,17 @@ const ResultsList = () => {
     <div className="results-list-page">
     <div className="container my-5">
       <div className="mb-4 text-center">
-        <h1 className="display-5">My Results</h1>
-        <p className="text-secondary">View your exam performance and detailed results</p>
+        <h1 className="display-5">{isTrainer ? 'All Student Results' : 'My Results'}</h1>
+        <p className="text-secondary">
+          {isTrainer ? 'View all student exam submissions and performance' : 'View your exam performance and detailed results'}
+        </p>
       </div>
 
       {submissions.length === 0 ? (
         <div className="card  text-center p-5"style={{background:'rgb(245, 245, 245)'}}>
           <h2 className="text-secondary mb-3">No Results Yet</h2>
           <p className="text-muted mb-4">
-            You haven't taken any exams yet. Take an exam to see your results here!
+            {isTrainer ? 'No student submissions found.' : "You haven't taken any exams yet. Take an exam to see your results here!"}
           </p>
          
         </div>
@@ -86,6 +93,11 @@ const ResultsList = () => {
                 >
                   <div className="card-body d-flex flex-column justify-content-between">
                     <div>
+                      {isTrainer && (
+                        <p className="text-primary fw-bold mb-2">
+                          Student: {submission.studentId?.name || 'Unknown'}
+                        </p>
+                      )}
                       <h5 className="card-title">{submission.examId?.title || 'Unknown Exam'}</h5>
                       <p className="card-subtitle text-muted mb-3">{submission.examId?.subject || 'Unknown Subject'}</p>
 

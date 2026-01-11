@@ -1,9 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { getAllExams } from '../services/api';
+import { AuthContext } from '../context/AuthContext';
 import axios from 'axios';
 
 const ExamList = () => {
+  const { user } = useContext(AuthContext);
   const [exams, setExams] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -38,10 +40,13 @@ const ExamList = () => {
         }
       });
       setExams(exams.filter((exam) => exam._id !== id));
+      alert('Exam deleted successfully!');
     } catch (err) {
-      alert('Failed to delete exam');
+      alert(err.response?.data?.message || 'Failed to delete exam');
     }
   };
+  
+  const isTrainer = user?.role === 'trainer' || user?.role === 'admin';
 
   if (loading) return <div style={{ textAlign: 'center', padding: '100px' }}>Loading...</div>;
   if (error) return <div style={{ textAlign: 'center', padding: '100px', color: '#c33' }}>{error}</div>;
@@ -128,18 +133,35 @@ const ExamList = () => {
                   Take Exam
                 </Link>
 
-                <button
-                  onClick={() => handleDelete(exam._id)}
-                  className="btn btn-danger flex-grow-1"
-                  style={{
-                    padding: '10px 20px',
-                    borderRadius: 8,
-                    fontWeight: 600,
-                    cursor: 'pointer'
-                  }}
-                >
-                  Delete
-                </button>
+                {isTrainer && (
+                  <>
+                    <Link
+                      to={`/edit-exam/${exam._id}`}
+                      className="btn btn-warning flex-grow-1 text-center"
+                      style={{
+                        padding: '10px 20px',
+                        borderRadius: 8,
+                        fontWeight: 600,
+                        textDecoration: 'none'
+                      }}
+                    >
+                      Edit
+                    </Link>
+
+                    <button
+                      onClick={() => handleDelete(exam._id)}
+                      className="btn btn-danger flex-grow-1"
+                      style={{
+                        padding: '10px 20px',
+                        borderRadius: 8,
+                        fontWeight: 600,
+                        cursor: 'pointer'
+                      }}
+                    >
+                      Delete
+                    </button>
+                  </>
+                )}
               </div>
             </div>
           ))}

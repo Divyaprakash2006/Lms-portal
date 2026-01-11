@@ -28,9 +28,9 @@ const upload = multer({
 /**
  * @route   POST /api/questions/import/:examId
  * @desc    Import questions from Moodle XML file
- * @access  Private
+ * @access  Private/Trainer
  */
-router.post('/import/:examId', upload.single('xmlFile'), async (req, res) => {
+router.post('/import/:examId', protect, authorize('trainer', 'admin'), upload.single('xmlFile'), async (req, res) => {
   try {
     const { examId } = req.params;
     
@@ -75,9 +75,9 @@ router.post('/import/:examId', upload.single('xmlFile'), async (req, res) => {
 /**
  * @route   POST /api/questions/import-preview/:examId
  * @desc    Preview questions from Moodle XML file without saving
- * @access  Private
+ * @access  Private/Trainer
  */
-router.post('/import-preview/:examId', upload.single('xmlFile'), async (req, res) => {
+router.post('/import-preview/:examId', protect, authorize('trainer', 'admin'), upload.single('xmlFile'), async (req, res) => {
   try {
     const { examId } = req.params;
     

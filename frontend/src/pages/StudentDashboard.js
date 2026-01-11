@@ -15,13 +15,11 @@ const StudentDashboard = () => {
     const fetchAssignedExams = async () => {
         try {
             const token = localStorage.getItem('token');
-            // Using the route I saw in examRoutes: router.get('/student', protect, getStudentExams);
-            // Backend URL context: /api/exams/student
-            const res = await axios.get('https://lms-portal-u9ze.vercel.app/api/exams/student', {
+            // Students will only see their assigned exams through the protected route
+            const res = await axios.get('https://lms-portal-u9ze.vercel.app/api/exams', {
                 headers: { Authorization: `Bearer ${token}` }
             });
-            // Handle the standardized response format I added earlier: { success: true, count: N, data: [...] }
-            // Or fallback if it returns raw array (the controller was updated to return standard JSON)
+            // Handle the standardized response format
             const examData = res.data.data || res.data;
             setExams(Array.isArray(examData) ? examData : []);
         } catch (error) {
@@ -96,7 +94,7 @@ const StudentDashboard = () => {
             </div>
 
             <div style={{ marginTop: '40px' }}>
-                <Link to="/results" style={{
+                <Link to="/results-list" style={{
                     display: 'inline-block',
                     padding: '12px 24px',
                     background: 'white',

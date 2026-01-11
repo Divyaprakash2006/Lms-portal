@@ -56,10 +56,12 @@ async function evaluateSubmission(answers, examId) {
   }
 }
 
+const { protect, authorize } = require('../middleware/auth');
+
 // @route   GET /api/submissions
-// @desc    Get all submissions
-// @access  Private
-router.get('/', async (req, res) => {
+// @desc    Get all submissions (Trainer only)
+// @access  Private/Trainer
+router.get('/', protect, authorize('trainer', 'admin'), async (req, res) => {
   try {
     const submissions = await Submission.find()
       .populate('examId', 'title')
@@ -78,8 +80,16 @@ router.get('/', async (req, res) => {
 // @route   GET /api/submissions/student/:studentId
 // @desc    Get submissions by student
 // @access  Private
-router.get('/student/:studentId', async (req, res) => {
+router.get('/student/:studentId', protect, async (req, res) => {
   try {
+    // Students can only view their own submissions
+    if (req.user.role === 'student' && req.user._id.toString() !== req.params.studentId) {
+      return res.status(403).json({ 
+        success: false,
+        message: 'Access denied. You can only view your own submissions' 
+      });
+    }
+    
     const submissions = await Submission.find({ studentId: req.params.studentId })
       .populate('examId', 'title subject totalMarks passingMarks')
       .populate('studentId', 'name email')
@@ -96,9 +106,9 @@ router.get('/student/:studentId', async (req, res) => {
 });
 
 // @route   GET /api/submissions/exam/:examId
-// @desc    Get submissions by exam
-// @access  Private
-router.get('/exam/:examId', async (req, res) => {
+// @desc    Get submissions by exam (Trainer only)
+// @access  Private/Trainer
+router.get('/exam/:examId', protect, authorize('trainer', 'admin'), async (req, res) => {
   try {
     const submissions = await Submission.find({ examId: req.params.examId })
       .populate('examId', 'title')

@@ -60,14 +60,22 @@ const Navbar = () => {
                 </li>
 
                 {user.role === 'trainer' && (
-                  <li className="nav-item">
-                    <Link className="navbar-btn" to="/create-exam">Create Exam</Link>
-                  </li>
+                  <>
+                    <li className="nav-item">
+                      <Link className="navbar-btn" to="/create-exam">Create Exam</Link>
+                    </li>
+                    
+                    <li className="nav-item">
+                      <Link className="navbar-btn" to="/results-list">All Results</Link>
+                    </li>
+                  </>
                 )}
 
-                <li className="nav-item">
-                  <Link className="navbar-btn" to="/results">Results</Link>
-                </li>
+                {user.role === 'student' && (
+                  <li className="nav-item">
+                    <Link className="navbar-btn" to="/results-list">My Results</Link>
+                  </li>
+                )}
 
                 {/* Avatar Dropdown */}
                 <li className="nav-item1 dropdown" style={{ position: 'relative' }}>

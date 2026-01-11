@@ -3,14 +3,22 @@ const router = express.Router();
 const Exam = require('../models/Exam');
 const Question = require('../models/Question');
 const Submission = require('../models/Submission');
+const User = require('../models/User');
 const { protect, authorize } = require('../middleware/auth');
 
 // @route   GET /api/exams
-// @desc    Get all exams
-// @access  Public
-router.get('/', async (req, res) => {
+// @desc    Get all exams (trainers see all, students see only assigned)
+// @access  Private
+router.get('/', protect, async (req, res) => {
   try {
-    const exams = await Exam.find().populate('createdBy', 'name email');
+    let query = {};
+    
+    // If student, only show assigned exams
+    if (req.user.role === 'student') {
+      query.assignedStudents = req.user._id;
+    }
+    
+    const exams = await Exam.find(query).populate('createdBy', 'name email');
     res.json({
       success: true,
       count: exams.length,
@@ -22,12 +30,22 @@ router.get('/', async (req, res) => {
 });
 
 // @route   POST /api/exams
-// @desc    Create exam (Trainer/Admin only)
-// @access  Private
-router.post('/', async (req, res) => {
+// @desc    Create exam (Trainer only)
+// @access  Private/Trainer
+router.post('/', protect, authorize('trainer', 'admin'), async (req, res) => {
   try {
-    // Add authentication later
-    const exam = await Exam.create(req.body);
+    const examData = { ...req.body, createdBy: req.user._id };
+    const exam = await Exam.create(examData);
+    
+    // Connect exam to assigned students
+    if (exam.assignedStudents && exam.assignedStudents.length > 0) {
+      for (const studentId of exam.assignedStudents) {
+        await User.findByIdAndUpdate(studentId, {
+          $addToSet: { assignedExams: exam._id }
+        });
+      }
+    }
+    
     res.status(201).json({
       success: true,
       data: exam
@@ -87,9 +105,9 @@ router.get('/:id/questions', async (req, res) => {
 });
 
 // @route   PUT /api/exams/:id
-// @desc    Update exam (Trainer/Admin only)
-// @access  Private
-router.put('/:id', async (req, res) => {
+// @desc    Update exam (Trainer only)
+// @access  Private/Trainer
+router.put('/:id', protect, authorize('trainer', 'admin'), async (req, res) => {
   try {
     const exam = await Exam.findById(req.params.id);
     
@@ -119,9 +137,9 @@ router.put('/:id', async (req, res) => {
 });
 
 // @route   DELETE /api/exams/:id
-// @desc    Delete exam (Trainer/Admin only)
-// @access  Private
-router.delete('/:id', async (req, res) => {
+// @desc    Delete exam (Trainer only)
+// @access  Private/Trainer
+router.delete('/:id', protect, authorize('trainer', 'admin'), async (req, res) => {
   try {
     const exam = await Exam.findById(req.params.id);
     

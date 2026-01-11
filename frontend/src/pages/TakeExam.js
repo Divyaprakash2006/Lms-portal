@@ -168,7 +168,7 @@ const TakeExam = () => {
         background: 'white',
         padding: '20px 30px',
         borderRadius: '15px',
-        boxShadow: '0 5px 20px rgba(0,0,0,0.1)',
+        
         marginBottom: '30px',
         display: 'flex',
         justifyContent: 'space-between',
@@ -189,7 +189,7 @@ const TakeExam = () => {
             fontWeight: 'bold',
             color: timeLeft < 300 ? '#dc3545' : '#667eea'
           }}>
-            ⏱️ {formatTime(timeLeft)}
+             {formatTime(timeLeft)}
           </div>
           <small style={{ color: '#666' }}>Time Remaining</small>
         </div>
@@ -213,7 +213,7 @@ const TakeExam = () => {
           background: 'white',
           padding: '30px',
           borderRadius: '15px',
-          boxShadow: '0 5px 20px rgba(0,0,0,0.1)',
+          
           marginBottom: '20px'
         }}>
           <div style={{ marginBottom: '20px' }}>

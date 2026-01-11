@@ -1,16 +1,20 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { getExamById, getExamQuestions } from '../services/api';
+import { AuthContext } from '../context/AuthContext';
 import ImportQuestions from '../components/ImportQuestions';
 
 const ExamDetails = () => {
   const { id } = useParams();
   const navigate = useNavigate();
+  const { user } = useContext(AuthContext);
   const [exam, setExam] = useState(null);
   const [questions, setQuestions] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [showImport, setShowImport] = useState(false);
+  
+  const isTrainer = user?.role === 'trainer' || user?.role === 'admin';
 
   const fetchExamData = async () => {
     try {
@@ -180,19 +184,21 @@ const ExamDetails = () => {
           <h2 style={{ margin: 0 }}>
             Questions ({questions.length})
           </h2>
-          <button
-            onClick={() => setShowImport(!showImport)}
-            style={{
-              padding: '10px 20px',
-              background: showImport ? '#dc3545' : '#28a745',
-              color: 'white',
-              border: 'none',
-              borderRadius: '8px',
-              cursor: 'pointer'
-            }}
-          >
-            {showImport ? 'Cancel Import' : '+ Import XML'}
-          </button>
+          {isTrainer && (
+            <button
+              onClick={() => setShowImport(!showImport)}
+              style={{
+                padding: '10px 20px',
+                background: showImport ? '#dc3545' : '#28a745',
+                color: 'white',
+                border: 'none',
+                borderRadius: '8px',
+                cursor: 'pointer'
+              }}
+            >
+              {showImport ? 'Cancel Import' : '+ Import XML'}
+            </button>
+          )}
         </div>
 
         {questions.length === 0 && !showImport && (
