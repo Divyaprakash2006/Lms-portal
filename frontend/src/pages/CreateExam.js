@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { createExam, getStudents } from '../services/api';
+import { createExam, getStudents, updateStudent } from '../services/api';
 import { AuthContext } from '../context/AuthContext';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './CreateExam.css';
@@ -25,6 +25,11 @@ const CreateExam = () => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
+  // Edit Student State
+  const [showEditModal, setShowEditModal] = useState(false);
+  const [editingStudent, setEditingStudent] = useState(null);
+  const [editForm, setEditForm] = useState({ name: '', email: '', password: '' });
+
   // Load students on mount
   useEffect(() => {
     const loadStudents = async () => {
@@ -40,7 +45,7 @@ const CreateExam = () => {
         console.error('Failed to fetch students:', err);
         setError(
           err.response?.data?.message ||
-            'Failed to load students. Ensure you have trainer access.'
+          'Failed to load students. Ensure you have trainer access.'
         );
       }
     };
@@ -74,6 +79,33 @@ const CreateExam = () => {
       setLoading(false);
     }
   };
+
+  const openEditModal = (student) => {
+    setEditingStudent(student);
+    setEditForm({ name: student.name, email: student.email, password: '' });
+    setShowEditModal(true);
+  };
+
+  const handleEditSubmit = async (e) => {
+    e.preventDefault();
+    if (!editingStudent) return;
+
+    try {
+      await updateStudent(editingStudent._id, editForm);
+      alert('Student updated successfully!');
+
+      // Update local state to reflect changes
+      setStudents(prev => prev.map(s =>
+        s._id === editingStudent._id ? { ...s, name: editForm.name, email: editForm.email } : s
+      ));
+
+      setShowEditModal(false);
+      setEditingStudent(null);
+    } catch (err) {
+      alert('Failed to update student: ' + (err.response?.data?.message || err.message));
+    }
+  };
+
 
   return (
     <div className="create-exam-page py-5">
@@ -222,7 +254,7 @@ const CreateExam = () => {
                           <div className="d-flex align-items-center">
                             <input
                               className="form-check-input1 me-2"
-                              type="checkbox" 
+                              type="checkbox"
                               value={student._id}
                               id={`studentCheck${index}`}
                               checked={formData.assignedStudents.includes(student._id)}
@@ -242,7 +274,7 @@ const CreateExam = () => {
                           <button
                             type="button"
                             className="btn btn-sm btn-warning ms-2"
-                            onClick={() => alert('Edit student: ' + student.name)}
+                            onClick={() => openEditModal(student)}
                           >
                             Edit
                           </button>
@@ -268,6 +300,74 @@ const CreateExam = () => {
 
         </form>
       </div>
+      {/* Edit Student Modal */}
+      {showEditModal && (
+        <div style={{
+          position: 'fixed',
+          top: 0, left: 0,
+          width: '100%', height: '100%',
+          backgroundColor: 'rgba(0,0,0,0.5)',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          zIndex: 1000
+        }}>
+          <div style={{
+            backgroundColor: 'white',
+            padding: '2rem',
+            borderRadius: '8px',
+            width: '400px',
+            maxWidth: '90%'
+          }}>
+            <h3>Edit Student</h3>
+            <form onSubmit={handleEditSubmit}>
+              <div className="mb-3">
+                <label className="form-label">Name</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  value={editForm.name}
+                  onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
+                  required
+                />
+              </div>
+              <div className="mb-3">
+                <label className="form-label">Email</label>
+                <input
+                  type="email"
+                  className="form-control"
+                  value={editForm.email}
+                  onChange={(e) => setEditForm({ ...editForm, email: e.target.value })}
+                  required
+                />
+              </div>
+              <div className="mb-3">
+                <label className="form-label">New Password (leave blank to keep current)</label>
+                <input
+                  type="password"
+                  className="form-control"
+                  value={editForm.password}
+                  onChange={(e) => setEditForm({ ...editForm, password: e.target.value })}
+                  placeholder="********"
+                />
+              </div>
+              <div className="d-flex justify-content-end gap-2">
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  onClick={() => setShowEditModal(false)}
+                >
+                  Cancel
+                </button>
+                <button type="submit" className="btn btn-primary">
+                  Save Changes
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
     </div>
   );
 };

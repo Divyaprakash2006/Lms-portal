@@ -34,6 +34,7 @@ export const getCurrentUser = () => API.get('/auth/me');
 export const getStudents = () => API.get('/users/students');
 export const getStudentById = (id) => API.get(`/users/${id}`);
 export const deleteStudent = (id) => API.delete(`/users/${id}`);
+export const updateStudent = (id, data) => API.put(`/users/${id}`, data);
 
 /* ======================
    EXAM APIs
