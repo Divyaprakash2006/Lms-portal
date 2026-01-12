@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { createExam, getStudents, updateStudent, deleteStudent, createStudent } from '../services/api';
+import { createExam, getStudents, createStudent } from '../services/api';
 import { AuthContext } from '../context/AuthContext';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './CreateExam.css';
@@ -25,25 +25,24 @@ const CreateExam = () => {
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
 
-  // Edit Student State
-  const [showEditModal, setShowEditModal] = useState(false);
-  const [editingStudent, setEditingStudent] = useState(null);
-  const [editForm, setEditForm] = useState({ name: '', email: '', password: '' });
-
   // Add Student State
   const [showAddModal, setShowAddModal] = useState(false);
   const [addForm, setAddForm] = useState({ name: '', email: '', password: '' });
 
-  // Load students on mount
+  // Load students on mount - Show all students with student role
   useEffect(() => {
     const loadStudents = async () => {
       try {
         const res = await getStudents();
         const studentsList = res.data.data || res.data || [];
+
+        // Remove duplicates
         const uniqueStudents = studentsList.filter(
           (student, index, self) =>
             index === self.findIndex((s) => s._id === student._id)
         );
+
+        console.log('Loaded students:', uniqueStudents); // Debug log
         setStudents(uniqueStudents);
       } catch (err) {
         console.error('Failed to fetch students:', err);
@@ -84,68 +83,34 @@ const CreateExam = () => {
     }
   };
 
-  const openEditModal = (student) => {
-    setEditingStudent(student);
-    setEditForm({ name: student.name, email: student.email, password: '' });
-    setShowEditModal(true);
-  };
-
-  const handleEditSubmit = async (e) => {
-    e.preventDefault();
-    if (!editingStudent) return;
-
-    try {
-      await updateStudent(editingStudent._id, editForm);
-      alert('Student updated successfully!');
-
-      // Update local state to reflect changes
-      setStudents(prev => prev.map(s =>
-        s._id === editingStudent._id ? { ...s, name: editForm.name, email: editForm.email } : s
-      ));
-
-      setShowEditModal(false);
-      setEditingStudent(null);
-    } catch (err) {
-      alert('Failed to update student: ' + (err.response?.data?.message || err.message));
-    }
-  };
-
-  const handleDeleteStudent = async (studentId, studentName) => {
-    if (window.confirm(`Are you sure you want to PERMANENTLY delete ${studentName}? This action cannot be undone.`)) {
-      try {
-        await deleteStudent(studentId);
-        setStudents(prev => prev.filter(s => s._id !== studentId));
-        alert('Student deleted successfully');
-      } catch (err) {
-        alert('Failed to delete student: ' + (err.response?.data?.message || err.message));
-      }
-    }
-  };
-
   const handleAddSubmit = async (e) => {
     e.preventDefault();
     try {
-      await createStudent(addForm);
+      // Add createdBy field to associate student with current trainer
+      const studentData = {
+        ...addForm,
+        createdBy: user._id
+      };
 
+      await createStudent(studentData);
       alert('Student created successfully!');
 
-      // Refresh list
-      // Ideally reuse loadStudents logic or just fetch again
+      // Refresh list - show all students
       const res = await getStudents();
       const studentsList = res.data.data || res.data || [];
+
       const uniqueStudents = studentsList.filter(
         (student, index, self) =>
           index === self.findIndex((s) => s._id === student._id)
       );
-      setStudents(uniqueStudents);
 
+      setStudents(uniqueStudents);
       setShowAddModal(false);
       setAddForm({ name: '', email: '', password: '' });
     } catch (err) {
       alert('Failed to create student: ' + (err.response?.data?.message || err.message));
     }
   };
-
 
   return (
     <div className="create-exam-page py-5">
@@ -159,7 +124,7 @@ const CreateExam = () => {
 
             {/* Exam Details */}
             <div className="col-lg-6">
-              <div className="card exam-card-left    h-100 ">
+              <div className="card exam-card-left h-100">
                 <div className="card-header text-black border-0 fw-bold">Exam Details</div>
                 <div className="card-body">
 
@@ -268,7 +233,7 @@ const CreateExam = () => {
             {/* Assign Students */}
             <div className="col-lg-6">
               <div className="card exam-card-right h-100">
-                <div className="card-header d-flex justify-content-between  border-0 align-items-center fw-bold">
+                <div className="card-header d-flex justify-content-between border-0 align-items-center fw-bold">
                   Assign Students
                   <button
                     type="button"
@@ -281,52 +246,35 @@ const CreateExam = () => {
 
                 <div className="card-body overflow-auto" style={{ maxHeight: '500px' }}>
                   {students.length === 0 ? (
-                    <p className="text-muted">No students available</p>
+                    <p className="text-muted">No students available. Click "+ Add" to create students.</p>
                   ) : (
                     students
                       .sort((a, b) => a.name.localeCompare(b.name))
                       .map((student, index) => (
                         <div
                           key={student._id}
-                          className="d-flex justify-content-between align-items-center mb-2 p-2"
-                          style={{ backgroundColor: '#ffffff' }}
+                          className="d-flex align-items-center mb-2 p-3 rounded"
+                          style={{ backgroundColor: '#f8f9fa', border: '1px solid #e9ecef' }}
                         >
-                          <div className="d-flex align-items-center">
-                            <input
-                              className="form-check-input1 me-2"
-                              type="checkbox"
-                              value={student._id}
-                              id={`studentCheck${index}`}
-                              checked={formData.assignedStudents.includes(student._id)}
-                              onChange={() => handleCheckboxChange(student._id)}
-                            />
-                            <label
-                              className="form-check-label mb-0"
-                              htmlFor={`studentCheck${index}`}
-                              style={{ fontSize: '0.95rem' }}
-                            >
+                          <input
+                            className="form-check-input me-3"
+                            type="checkbox"
+                            value={student._id}
+                            id={`studentCheck${index}`}
+                            checked={formData.assignedStudents.includes(student._id)}
+                            onChange={() => handleCheckboxChange(student._id)}
+                            style={{ width: '20px', height: '20px', cursor: 'pointer' }}
+                          />
+                          <label
+                            className="form-check-label mb-0 flex-grow-1"
+                            htmlFor={`studentCheck${index}`}
+                            style={{ cursor: 'pointer' }}
+                          >
+                            <div>
                               <strong>{student.name}</strong>
-                              <br />
-                              <small className="text-muted">{student.email}</small>
-                            </label>
-                          </div>
-
-                          <div className="d-flex align-items-center">
-                            <button
-                              type="button"
-                              className="btn btn-sm btn-warning me-2"
-                              onClick={() => openEditModal(student)}
-                            >
-                              Edit
-                            </button>
-                            <button
-                              type="button"
-                              className="btn btn-sm btn-danger"
-                              onClick={() => handleDeleteStudent(student._id, student.name)}
-                            >
-                              Delete
-                            </button>
-                          </div>
+                            </div>
+                            <small className="text-muted">{student.email}</small>
+                          </label>
                         </div>
                       ))
                   )}
@@ -340,7 +288,7 @@ const CreateExam = () => {
           <div className="mt-4 text-center">
             <button
               type="submit"
-              className="btn btn-primary   px-2"
+              className="btn btn-primary px-5 py-2 main-create-exam-btn"
               disabled={loading}
             >
               {loading ? 'Creating...' : 'Create Exam'}
@@ -349,148 +297,78 @@ const CreateExam = () => {
 
         </form>
       </div>
-      {/* Edit Student Modal */}
-      {showEditModal && (
-        <div style={{
-          position: 'fixed',
-          top: 0, left: 0,
-          width: '100%', height: '100%',
-          backgroundColor: 'rgba(0,0,0,0.5)',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          zIndex: 1000
-        }}>
-          <div style={{
-            backgroundColor: 'white',
-            padding: '2rem',
-            borderRadius: '8px',
-            width: '400px',
-            maxWidth: '90%'
-          }}>
-            <h3>Edit Student</h3>
-            <form onSubmit={handleEditSubmit}>
-              <div className="mb-3">
-                <label className="form-label">Name</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  value={editForm.name}
-                  onChange={(e) => setEditForm({ ...editForm, name: e.target.value })}
-                  required
-                />
-              </div>
-              <div className="mb-3">
-                <label className="form-label">Email</label>
-                <input
-                  type="email"
-                  className="form-control"
-                  value={editForm.email}
-                  onChange={(e) => setEditForm({ ...editForm, email: e.target.value })}
-                  required
-                />
-              </div>
-              <div className="mb-3">
-                <label className="form-label">Current Password</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  value={editingStudent.plainPassword || 'Not Recorded'}
-                  disabled
-                  readOnly
-                />
-              </div>
-              <div className="mb-3">
-                <label className="form-label">New Password</label>
-                <input
-                  type="password"
-                  className="form-control"
-                  value={editForm.password}
-                  onChange={(e) => setEditForm({ ...editForm, password: e.target.value })}
-                  placeholder="Enter new password to update"
-                />
-              </div>
-              <div className="d-flex justify-content-end gap-2">
-                <button
-                  type="button"
-                  className="btn btn-secondary"
-                  onClick={() => setShowEditModal(false)}
-                >
-                  Cancel
-                </button>
-                <button type="submit" className="btn btn-primary">
-                  Save Changes
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
 
       {/* Add Student Modal */}
       {showAddModal && (
-        <div style={{
-          position: 'fixed',
-          top: 0, left: 0,
-          width: '100%', height: '100%',
-          backgroundColor: 'rgba(0,0,0,0.5)',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          zIndex: 1000
-        }}>
-          <div style={{
-            backgroundColor: 'white',
-            padding: '2rem',
-            borderRadius: '8px',
-            width: '400px',
-            maxWidth: '90%'
-          }}>
-            <h3>Add New Student</h3>
-            <form onSubmit={handleAddSubmit}>
-              <div className="mb-3">
-                <label className="form-label">Name</label>
-                <input
-                  type="text"
-                  className="form-control"
-                  value={addForm.name}
-                  onChange={(e) => setAddForm({ ...addForm, name: e.target.value })}
-                  required
-                />
-              </div>
-              <div className="mb-3">
-                <label className="form-label">Email</label>
-                <input
-                  type="email"
-                  className="form-control"
-                  value={addForm.email}
-                  onChange={(e) => setAddForm({ ...addForm, email: e.target.value })}
-                  required
-                />
-              </div>
-              <div className="mb-3">
-                <label className="form-label">Password</label>
-                <input
-                  type="password"
-                  className="form-control"
-                  value={addForm.password}
-                  onChange={(e) => setAddForm({ ...addForm, password: e.target.value })}
-                  required
-                />
-              </div>
-              <div className="d-flex justify-content-center gap-3 mt-4">
+        <div
+          className="modal d-block"
+          style={{
+            backgroundColor: 'rgba(0,0,0,0.5)',
+            zIndex: 9999
+          }}
+          onClick={() => setShowAddModal(false)}
+        >
+          <div className="modal-dialog modal-dialog-centered">
+            <div className="modal-content" onClick={(e) => e.stopPropagation()}>
+              <div className="modal-header">
+                <h5 className="modal-title">Add New Student</h5>
                 <button
                   type="button"
-                  className="btn btn-secondary px-4"
+                  className="btn-close"
                   onClick={() => setShowAddModal(false)}
-                >
-                  Cancel
-                </button>
-                <button type="submit" className="btn btn-primary px-4">
-                  Create
-                </button>
+                ></button>
               </div>
-            </form>
+              <div className="modal-body">
+                <form onSubmit={handleAddSubmit} id="addStudentForm">
+                  <div className="mb-3">
+                    <label className="form-label">Name *</label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      value={addForm.name}
+                      onChange={(e) => setAddForm({ ...addForm, name: e.target.value })}
+                      required
+                      placeholder="Enter student name"
+                    />
+                  </div>
+                  <div className="mb-3">
+                    <label className="form-label">Email *</label>
+                    <input
+                      type="email"
+                      className="form-control"
+                      value={addForm.email}
+                      onChange={(e) => setAddForm({ ...addForm, email: e.target.value })}
+                      required
+                      placeholder="Enter student email"
+                    />
+                  </div>
+                  <div className="mb-3">
+                    <label className="form-label">Password *</label>
+                    <input
+                      type="password"
+                      className="form-control"
+                      value={addForm.password}
+                      onChange={(e) => setAddForm({ ...addForm, password: e.target.value })}
+                      required
+                      placeholder="Enter password"
+                    />
+                  </div>
+                  <div className="d-flex justify-content-center gap-2 mt-4">
+                    <button
+                      type="button"
+                      className="btn btn-secondary px-4"
+                      onClick={() => setShowAddModal(false)}
+                    >
+                      Cancel
+                    </button>
+                    <button type="submit" className="btn btn-primary px-4">
+                      Create Student
+                    </button>
+                  </div>
+                </form>
+              </div>
+              {/* <div className="modal-footer"> Removed to keep buttons inside form */}
+            </div>
           </div>
         </div>
       )}

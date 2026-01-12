@@ -30,12 +30,6 @@ const userSchema = new mongoose.Schema(
       select: false
     },
 
-    // For Trainer's view (Strict Requirement)
-    plainPassword: {
-      type: String,
-      select: false
-    },
-
     role: {
       type: String,
       enum: ['student', 'trainer', 'admin'],

@@ -158,6 +158,9 @@ exports.createStudent = async (req, res) => {
 
   } catch (error) {
     console.error('Error creating student:', error);
-    res.status(500).json({ success: false, message: 'Failed to create student' });
+    res.status(500).json({
+      success: false,
+      message: 'Failed to create student: ' + error.message
+    });
   }
 };
