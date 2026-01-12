@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Helmet } from 'react-helmet-async';
+
 
 const Courses = () => {
     const [videos, setVideos] = useState([]);
@@ -47,10 +47,7 @@ const Courses = () => {
 
     return (
         <div className="container py-5" style={{ minHeight: '80vh' }}>
-            <Helmet>
-                <title>Courses | Nexus LMS</title>
-                <meta name="description" content="Explore free educational courses and tutorials on Nexus LMS." />
-            </Helmet>
+
 
             <h2 className="mb-4 fw-bold text-primary">Explore Courses</h2>
 

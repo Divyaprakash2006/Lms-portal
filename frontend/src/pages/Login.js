@@ -1,5 +1,5 @@
 import React, { useState, useContext, useEffect } from 'react';
-import { Helmet } from 'react-helmet-async';
+
 import { useNavigate, useLocation } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
 
@@ -97,10 +97,7 @@ const Login = () => {
       padding: '20px 0',
       backgroundColor: '#fff'
     }}>
-      <Helmet>
-        <title>{isLogin ? 'Login | Nexus LMS' : 'Register | Nexus LMS'}</title>
-        <meta name="description" content={isLogin ? "Login to your Nexus LMS account to access exams and reports." : "Create a new Nexus LMS account to start taking exams."} />
-      </Helmet>
+
       <div className="container">
         <div className="row justify-content-center">
           <div className="col-xl-10 col-lg-11">

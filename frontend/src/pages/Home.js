@@ -1,15 +1,12 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { Helmet } from 'react-helmet-async';
+
 import './Home.css';
 
 const Home = () => {
   return (
     <div style={{ minHeight: 'calc(100vh - 70px)' }}>
-      <Helmet>
-        <title>Nexus LMS - Home</title>
-        <meta name="description" content="Welcome to Nexus LMS, the ultimate online examination platform for students and trainers." />
-      </Helmet>
+
 
       {/* ================= HERO SECTION ================= */}
       <section style={{ backgroundColor: '#fff', padding: '80px 0', overflow: 'hidden' }}>
