@@ -17,7 +17,7 @@ const Home = () => {
               <div style={{ position: 'relative' }}>
 
                 <img
-                  src="https://images.unsplash.com/photo-1531545514256-b1400bc00f31?ixlib=rb-4.0.3&auto=format&fit=crop&w=1074&q=80"
+                  src="https://media.istockphoto.com/id/2105091005/photo/young-student-taking-notes-while-e-learning-on-laptop-at-the-university.jpg?s=612x612&w=0&k=20&c=5AoTWNFmHm-HeQfx0FzB3LPm3MKQXgokYelEvmC_47E="
                   alt="Student learning"
                   className="img-fluid rounded shadow-lg"
                   style={{ position: 'relative', zIndex: 1, width: '100%', objectFit: 'cover' }}
