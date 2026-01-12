@@ -342,13 +342,23 @@ const CreateExam = () => {
                 />
               </div>
               <div className="mb-3">
-                <label className="form-label">New Password (leave blank to keep current)</label>
+                <label className="form-label">Current Password</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  value="********"
+                  disabled
+                  readOnly
+                />
+              </div>
+              <div className="mb-3">
+                <label className="form-label">New Password</label>
                 <input
                   type="password"
                   className="form-control"
                   value={editForm.password}
                   onChange={(e) => setEditForm({ ...editForm, password: e.target.value })}
-                  placeholder="********"
+                  placeholder="Enter new password to update"
                 />
               </div>
               <div className="d-flex justify-content-end gap-2">
