@@ -478,16 +478,16 @@ const CreateExam = () => {
                   required
                 />
               </div>
-              <div className="d-flex justify-content-end gap-2">
+              <div className="d-flex justify-content-center gap-3 mt-4">
                 <button
                   type="button"
-                  className="btn btn-secondary"
+                  className="btn btn-secondary px-4"
                   onClick={() => setShowAddModal(false)}
                 >
                   Cancel
                 </button>
-                <button type="submit" className="btn btn-primary">
-                  Create Student
+                <button type="submit" className="btn btn-primary px-4">
+                  Create
                 </button>
               </div>
             </form>
