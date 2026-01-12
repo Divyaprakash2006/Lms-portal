@@ -1,3 +1,14 @@
 # https://www.robotstxt.org/robotstxt.html
 User-agent: *
-Disallow:
+Disallow: /dashboard
+Disallow: /student-dashboard
+Disallow: /create-exam
+Disallow: /take-exam/
+Disallow: /exams/
+Disallow: /results
+
+Allow: /
+Allow: /login
+Allow: /register
+
+Sitemap: https://nexuslms.vercel.app/sitemap.xml
