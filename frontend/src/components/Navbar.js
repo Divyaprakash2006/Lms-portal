@@ -59,12 +59,16 @@ const Navbar = () => {
                   <Link className="navbar-btn" to="/exams">Exams</Link>
                 </li>
 
+                <li className="nav-item">
+                  <Link className="navbar-btn" to="/courses">Courses</Link>
+                </li>
+
                 {user.role === 'trainer' && (
                   <>
                     <li className="nav-item">
                       <Link className="navbar-btn" to="/create-exam">Create Exam</Link>
                     </li>
-                    
+
                     <li className="nav-item">
                       <Link className="navbar-btn" to="/results-list">All Results</Link>
                     </li>

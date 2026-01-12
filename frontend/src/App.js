@@ -14,6 +14,7 @@ import TakeExam from './pages/TakeExam';
 import Results from './pages/Results';
 import ResultsList from './pages/ResultsList';
 import StudentDashboard from './pages/StudentDashboard';
+import Courses from './pages/Courses';
 
 // Protected Route Component
 const ProtectedRoute = ({ children }) => {
@@ -115,6 +116,15 @@ function AppContent() {
               element={
                 <ProtectedRoute>
                   <Results />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/courses"
+              element={
+                <ProtectedRoute>
+                  <Courses />
                 </ProtectedRoute>
               }
             />
