@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { createExam, getStudents, updateStudent, deleteStudent } from '../services/api';
+import { createExam, getStudents, updateStudent, deleteStudent, createStudent } from '../services/api';
 import { AuthContext } from '../context/AuthContext';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './CreateExam.css';
@@ -29,6 +29,10 @@ const CreateExam = () => {
   const [showEditModal, setShowEditModal] = useState(false);
   const [editingStudent, setEditingStudent] = useState(null);
   const [editForm, setEditForm] = useState({ name: '', email: '', password: '' });
+
+  // Add Student State
+  const [showAddModal, setShowAddModal] = useState(false);
+  const [addForm, setAddForm] = useState({ name: '', email: '', password: '' });
 
   // Load students on mount
   useEffect(() => {
@@ -115,6 +119,30 @@ const CreateExam = () => {
       } catch (err) {
         alert('Failed to delete student: ' + (err.response?.data?.message || err.message));
       }
+    }
+  };
+
+  const handleAddSubmit = async (e) => {
+    e.preventDefault();
+    try {
+      await createStudent(addForm);
+
+      alert('Student created successfully!');
+
+      // Refresh list
+      // Ideally reuse loadStudents logic or just fetch again
+      const res = await getStudents();
+      const studentsList = res.data.data || res.data || [];
+      const uniqueStudents = studentsList.filter(
+        (student, index, self) =>
+          index === self.findIndex((s) => s._id === student._id)
+      );
+      setStudents(uniqueStudents);
+
+      setShowAddModal(false);
+      setAddForm({ name: '', email: '', password: '' });
+    } catch (err) {
+      alert('Failed to create student: ' + (err.response?.data?.message || err.message));
     }
   };
 
@@ -245,7 +273,7 @@ const CreateExam = () => {
                   <button
                     type="button"
                     className="btn btn-outline-primary btn-sm"
-                    onClick={() => alert('Add Student Modal Here')}
+                    onClick={() => setShowAddModal(true)}
                   >
                     + Add
                   </button>
@@ -392,6 +420,74 @@ const CreateExam = () => {
                 </button>
                 <button type="submit" className="btn btn-primary">
                   Save Changes
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      )}
+
+      {/* Add Student Modal */}
+      {showAddModal && (
+        <div style={{
+          position: 'fixed',
+          top: 0, left: 0,
+          width: '100%', height: '100%',
+          backgroundColor: 'rgba(0,0,0,0.5)',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          zIndex: 1000
+        }}>
+          <div style={{
+            backgroundColor: 'white',
+            padding: '2rem',
+            borderRadius: '8px',
+            width: '400px',
+            maxWidth: '90%'
+          }}>
+            <h3>Add New Student</h3>
+            <form onSubmit={handleAddSubmit}>
+              <div className="mb-3">
+                <label className="form-label">Name</label>
+                <input
+                  type="text"
+                  className="form-control"
+                  value={addForm.name}
+                  onChange={(e) => setAddForm({ ...addForm, name: e.target.value })}
+                  required
+                />
+              </div>
+              <div className="mb-3">
+                <label className="form-label">Email</label>
+                <input
+                  type="email"
+                  className="form-control"
+                  value={addForm.email}
+                  onChange={(e) => setAddForm({ ...addForm, email: e.target.value })}
+                  required
+                />
+              </div>
+              <div className="mb-3">
+                <label className="form-label">Password</label>
+                <input
+                  type="password"
+                  className="form-control"
+                  value={addForm.password}
+                  onChange={(e) => setAddForm({ ...addForm, password: e.target.value })}
+                  required
+                />
+              </div>
+              <div className="d-flex justify-content-end gap-2">
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  onClick={() => setShowAddModal(false)}
+                >
+                  Cancel
+                </button>
+                <button type="submit" className="btn btn-primary">
+                  Create Student
                 </button>
               </div>
             </form>

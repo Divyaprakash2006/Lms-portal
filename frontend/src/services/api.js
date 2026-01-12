@@ -32,6 +32,7 @@ export const getCurrentUser = () => API.get('/auth/me');
    USER APIs
 ====================== */
 export const getStudents = () => API.get('/users/students');
+export const createStudent = (data) => API.post('/users/students', data);
 export const getStudentById = (id) => API.get(`/users/${id}`);
 export const deleteStudent = (id) => API.delete(`/users/${id}`);
 export const updateStudent = (id, data) => API.put(`/users/${id}`, data);

@@ -112,3 +112,39 @@ exports.deleteStudent = async (req, res) => {
     res.status(500).json({ success: false, message: 'Failed to delete student' });
   }
 };
+
+exports.createStudent = async (req, res) => {
+  try {
+    const { name, email, password } = req.body;
+
+    if (!name || !email || !password) {
+      return res.status(400).json({ success: false, message: 'Please provide name, email and password' });
+    }
+
+    const userExists = await User.findOne({ email });
+    if (userExists) {
+      return res.status(400).json({ success: false, message: 'User already exists' });
+    }
+
+    const user = await User.create({
+      name,
+      email,
+      password,
+      plainPassword: password, // Important for Trainer visibility
+      role: 'student'
+    });
+
+    // Return the new student (including plainPassword for immediate display if needed)
+    // But usually simple response is enough. The list refresh will pick it up.
+
+    res.status(201).json({
+      success: true,
+      data: user,
+      message: 'Student created successfully'
+    });
+
+  } catch (error) {
+    console.error('Error creating student:', error);
+    res.status(500).json({ success: false, message: 'Failed to create student' });
+  }
+};
