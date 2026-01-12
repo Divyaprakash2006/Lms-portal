@@ -67,4 +67,57 @@ router.get('/exam/:examId', protect, authorize('trainer', 'admin'), async (req, 
   }
 });
 
+// @route   DELETE /api/reports/clear
+// @desc    Clear all reports (Trainer only)
+// @access  Private/Trainer
+router.delete('/clear', protect, authorize('trainer', 'admin'), async (req, res) => {
+  try {
+    const result = await Report.deleteMany({});
+    
+    res.status(200).json({
+      success: true,
+      message: `Successfully deleted ${result.deletedCount} report(s)`,
+      deletedCount: result.deletedCount
+    });
+  } catch (err) {
+    console.error('Error clearing reports:', err);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to clear reports',
+      error: err.message
+    });
+  }
+});
+
+// @route   DELETE /api/reports/:id
+// @desc    Delete a single report (Trainer only)
+// @access  Private/Trainer
+router.delete('/:id', protect, authorize('trainer', 'admin'), async (req, res) => {
+  try {
+    const report = await Report.findById(req.params.id);
+    
+    if (!report) {
+      return res.status(404).json({
+        success: false,
+        message: 'Report not found'
+      });
+    }
+    
+    await report.deleteOne();
+    
+    res.status(200).json({
+      success: true,
+      message: 'Report deleted successfully',
+      data: {}
+    });
+  } catch (err) {
+    console.error('Error deleting report:', err);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to delete report',
+      error: err.message
+    });
+  }
+});
+
 module.exports = router;

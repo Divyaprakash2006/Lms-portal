@@ -60,6 +60,12 @@ export const importQuestionsFromXML = (examId, file) => {
   });
 };
 
+export const uploadQuestionsXML = (examId, formData) => {
+  return API.post(`/questions/import/${examId}`, formData, {
+    headers: { 'Content-Type': 'multipart/form-data' },
+  });
+};
+
 export const previewQuestionsFromXML = (examId, file) => {
   const formData = new FormData();
   formData.append('xmlFile', file);
@@ -91,5 +97,6 @@ export const getReportsByStudent = (studentId) =>
   API.get(`/reports/student/${studentId}`);
 export const getReportsByExam = (examId) =>
   API.get(`/reports/exam/${examId}`);
+export const clearReports = () => API.delete('/reports/clear');
 
 export default API;

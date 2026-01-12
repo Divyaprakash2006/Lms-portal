@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { createExam, getStudents, createStudent } from '../services/api';
+import { createExam, getStudents, createStudent, uploadQuestionsXML } from '../services/api';
 import { AuthContext } from '../context/AuthContext';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './CreateExam.css';
@@ -28,6 +28,11 @@ const CreateExam = () => {
   // Add Student State
   const [showAddModal, setShowAddModal] = useState(false);
   const [addForm, setAddForm] = useState({ name: '', email: '', password: '' });
+
+  // XML Import State
+  const [xmlFile, setXmlFile] = useState(null);
+  const [xmlFileName, setXmlFileName] = useState('');
+  const [uploadingXML, setUploadingXML] = useState(false);
 
   // Load students on mount - Show all students with student role
   useEffect(() => {
@@ -68,18 +73,54 @@ const CreateExam = () => {
     }));
   };
 
+  const handleXMLFileChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      if (file.type === 'text/xml' || file.name.endsWith('.xml')) {
+        setXmlFile(file);
+        setXmlFileName(file.name);
+        setError('');
+      } else {
+        setError('Please select a valid XML file');
+        e.target.value = '';
+      }
+    }
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
     setLoading(true);
+
     try {
+      // Step 1: Create the exam
       const examData = { ...formData, createdBy: user._id };
-      await createExam(examData);
-      alert('Exam created successfully!');
+      const examResponse = await createExam(examData);
+      const createdExamId = examResponse.data.data._id;
+
+      // Step 2: If XML file is selected, upload questions
+      if (xmlFile) {
+        setUploadingXML(true);
+        const formDataXML = new FormData();
+        formDataXML.append('file', xmlFile);
+
+        try {
+          await uploadQuestionsXML(createdExamId, formDataXML);
+          alert('Exam created and questions imported successfully!');
+        } catch (xmlError) {
+          console.error('XML upload error:', xmlError);
+          alert('Exam created successfully, but failed to import questions. You can add questions later.');
+        }
+        setUploadingXML(false);
+      } else {
+        alert('Exam created successfully!');
+      }
+
       navigate('/exams');
     } catch (err) {
       setError(err.response?.data?.message || 'Failed to create exam');
       setLoading(false);
+      setUploadingXML(false);
     }
   };
 
@@ -226,6 +267,25 @@ const CreateExam = () => {
                     />
                   </div>
 
+                  {/* XML Import Section */}
+                  <div className="mb-3">
+                    <label className="form-label">Import Questions (XML) - Optional</label>
+                    <input
+                      type="file"
+                      className="form-control"
+                      accept=".xml"
+                      onChange={handleXMLFileChange}
+                    />
+                    {xmlFileName && (
+                      <small className="text-success d-block mt-2">
+                        ✓ Selected: {xmlFileName}
+                      </small>
+                    )}
+                    <small className="text-muted d-block mt-1">
+                      Upload an XML file to automatically import questions into this exam
+                    </small>
+                  </div>
+
                 </div>
               </div>
             </div>
@@ -289,9 +349,9 @@ const CreateExam = () => {
             <button
               type="submit"
               className="btn btn-primary px-5 py-2 main-create-exam-btn"
-              disabled={loading}
+              disabled={loading || uploadingXML}
             >
-              {loading ? 'Creating...' : 'Create Exam'}
+              {loading ? (uploadingXML ? 'Uploading Questions...' : 'Creating Exam...') : 'Create Exam'}
             </button>
           </div>
 
@@ -353,21 +413,24 @@ const CreateExam = () => {
                       placeholder="Enter password"
                     />
                   </div>
-                  <div className="d-flex justify-content-center gap-2 mt-4">
-                    <button
-                      type="button"
-                      className="btn btn-secondary px-4"
-                      onClick={() => setShowAddModal(false)}
-                    >
-                      Cancel
-                    </button>
-                    <button type="submit" className="btn btn-primary px-4">
-                      Create Student
-                    </button>
-                  </div>
                 </form>
               </div>
-              {/* <div className="modal-footer"> Removed to keep buttons inside form */}
+              <div className="modal-footer">
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  onClick={() => setShowAddModal(false)}
+                >
+                  Cancel
+                </button>
+                <button 
+                  type="submit" 
+                  form="addStudentForm"
+                  className="btn btn-primary"
+                >
+                  Create Student
+                </button>
+              </div>
             </div>
           </div>
         </div>

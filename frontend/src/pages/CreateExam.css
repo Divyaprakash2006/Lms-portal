@@ -81,16 +81,13 @@ body {
 }
 
 /* SUBMIT BUTTON (Main Create Exam Button Only) */
+/* SUBMIT BUTTON (Main Create Exam Button Only) */
 .create-exam-page .main-create-exam-btn {
+  /* Only minimal enhancements to standard bootstrap btn-primary */
   border-radius: 8px;
-  padding: 12px;
-  color: black;
   font-size: 1.1rem;
-  background-color: #ffffff;
+  padding: 12px;
   font-family: ui-rounded, sans-serif;
-  position: relative;
-  bottom: 810px;
-  left: 610px;
   transition: all 0.2s ease-in-out;
   display: inline-block;
 }
