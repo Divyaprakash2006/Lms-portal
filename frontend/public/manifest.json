@@ -1,6 +1,6 @@
 {
-  "short_name": "Nexus LMS",
-  "name": "Nexus Online Learning & Exams Platform",
+  "short_name": "React App",
+  "name": "Create React App Sample",
   "icons": [
     {
       "src": "favicon.ico",
