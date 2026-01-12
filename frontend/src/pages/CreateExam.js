@@ -283,20 +283,22 @@ const CreateExam = () => {
                             </label>
                           </div>
 
-                          <button
-                            type="button"
-                            className="btn btn-sm btn-warning ms-2"
-                            onClick={() => openEditModal(student)}
-                          >
-                            Edit
-                          </button>
-                          <button
-                            type="button"
-                            className="btn btn-sm btn-danger ms-2"
-                            onClick={() => handleDeleteStudent(student._id, student.name)}
-                          >
-                            Delete
-                          </button>
+                          <div className="d-flex align-items-center">
+                            <button
+                              type="button"
+                              className="btn btn-sm btn-warning me-2"
+                              onClick={() => openEditModal(student)}
+                            >
+                              Edit
+                            </button>
+                            <button
+                              type="button"
+                              className="btn btn-sm btn-danger"
+                              onClick={() => handleDeleteStudent(student._id, student.name)}
+                            >
+                              Delete
+                            </button>
+                          </div>
                         </div>
                       ))
                   )}
