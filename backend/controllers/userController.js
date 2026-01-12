@@ -7,9 +7,13 @@ exports.getStudents = async (req, res) => {
     // Build query based on role
     let query = { role: 'student' };
 
-    // If trainer, only show students created by them
+    // If trainer, show students created by them OR legacy students (no creator)
     if (req.user.role === 'trainer') {
-      query.createdBy = req.user._id;
+      query.$or = [
+        { createdBy: req.user._id },
+        { createdBy: { $exists: false } },
+        { createdBy: null }
+      ];
     }
 
     // Fetch students
