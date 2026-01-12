@@ -1,4 +1,5 @@
 import React, { useContext } from 'react';
+import { HelmetProvider } from 'react-helmet-async';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, AuthContext } from './context/AuthContext';
 import Navbar from './components/Navbar';
@@ -129,9 +130,11 @@ function AppContent() {
 // Main App Component
 function App() {
   return (
-    <AuthProvider>
-      <AppContent />
-    </AuthProvider>
+    <HelmetProvider>
+      <AuthProvider>
+        <AppContent />
+      </AuthProvider>
+    </HelmetProvider>
   );
 }
 
