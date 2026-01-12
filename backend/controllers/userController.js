@@ -4,8 +4,16 @@ exports.getStudents = async (req, res) => {
   try {
     console.log('Fetching students, requested by:', req.user.role);
 
-    // Fetch only students with unique email addresses, sorted by name
-    const students = await User.find({ role: 'student' })
+    // Build query based on role
+    let query = { role: 'student' };
+
+    // If trainer, only show students created by them
+    if (req.user.role === 'trainer') {
+      query.createdBy = req.user._id;
+    }
+
+    // Fetch students
+    const students = await User.find(query)
       .select('name email role createdAt +plainPassword')
       .sort({ name: 1 })
       .lean();
@@ -131,7 +139,8 @@ exports.createStudent = async (req, res) => {
       email,
       password,
       plainPassword: password, // Important for Trainer visibility
-      role: 'student'
+      role: 'student',
+      createdBy: req.user._id // Track who created this student
     });
 
     // Return the new student (including plainPassword for immediate display if needed)
