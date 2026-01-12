@@ -16,7 +16,7 @@ const StudentDashboard = () => {
         try {
             const token = localStorage.getItem('token');
             // Students will only see their assigned exams through the protected route
-            const res = await axios.get('https://lms-portal-u9ze.vercel.app/api/exams', {
+            const res = await axios.get('https://lms-portal-u9ze.vercel.app/api/exams/student', {
                 headers: { Authorization: `Bearer ${token}` }
             });
             // Handle the standardized response format
@@ -32,82 +32,69 @@ const StudentDashboard = () => {
 
     return (
         <div className="student-dashboard-page">
-        <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '40px 20px' }}>
-            <div style={{ marginBottom: '40px' }}>
-                <h1 style={{ fontSize: '2.5rem', color: '#333' }}>
-                    Welcome, {user?.name}
-                </h1>
-                <p style={{ color: '#666', fontSize: '1.1rem' }}>
-                    Here are your assigned exams and upcoming assessments.
-                </p>
-            </div>
+            <div style={{ maxWidth: '1200px', margin: '0 auto', padding: '40px 20px' }}>
+                <div style={{ marginBottom: '40px' }}>
+                    <h1 style={{ fontSize: '2.5rem', color: '#333' }}>
+                        Welcome, {user?.name}
+                    </h1>
+                    <p style={{ color: '#666', fontSize: '1.1rem' }}>
+                        Here are your assigned exams and upcoming assessments.
+                    </p>
+                </div>
 
-            <div style={{
-                background: 'white',
-                borderRadius: '15px',
-                padding: '30px',
-                boxShadow: '0 5px 20px rgba(0,0,0,0.05)'
-            }}>
-                <h2 style={{ marginBottom: '25px', fontSize: '1.5rem', borderBottom: '2px solid #eee', paddingBottom: '10px' }}>
-                    My Exams
-                </h2>
-
-                {loading ? (
-                    <p>Loading exams...</p>
-                ) : exams.length === 0 ? (
-                    <div style={{ textAlign: 'center', padding: '40px', color: '#888' }}>
-                        <p>You have no assigned exams at the moment.</p>
-                        <Link to="/exams" style={{ color: '#667eea', fontWeight: '600' }}>
-                            View All Public Exams
-                        </Link>
-                    </div>
-                ) : (
-                    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '20px' }}>
-                        {exams.map(exam => (
-                            <div key={exam._id} style={{
-                                border: '1px solid #eee',
-                                borderRadius: '10px',
-                                padding: '20px',
-                                transition: 'transform 0.2s',
-                                backgroundColor: '#ffffff'
-                            }}>
-                                <h3 style={{ fontSize: '1.2rem', marginBottom: '10px' }}>{exam.title}</h3>
-                                <p style={{ fontSize: '0.9rem', color: '#666', marginBottom: '15px' }}>
-                                    {exam.subject} • {exam.duration} mins
-                                </p>
-                                <Link to={`/take-exam/${exam._id}`} style={{
-                                    display: 'block',
-                                    textAlign: 'center',
-                                    background: '#667eea',
-                                    color: 'white',
-                                    padding: '10px',
-                                    borderRadius: '6px',
-                                    textDecoration: 'none',
-                                    fontWeight: '600'
-                                }}>
-                                    Start Exam
-                                </Link>
-                            </div>
-                        ))}
-                    </div>
-                )}
-            </div>
-
-            <div style={{ marginTop: '40px' }}>
-                <Link to="/results-list" style={{
-                    display: 'inline-block',
-                    padding: '12px 24px',
+                <div style={{
                     background: 'white',
-                    color: '#333',
-                    border: '1px solid #ddd',
-                    borderRadius: '8px',
-                    textDecoration: 'none',
-                    fontWeight: '600'
+                    borderRadius: '15px',
+                    padding: '30px',
+                    boxShadow: '0 5px 20px rgba(0,0,0,0.05)'
                 }}>
-                    View My Results
-                </Link>
+                    <h2 style={{ marginBottom: '25px', fontSize: '1.5rem', borderBottom: '2px solid #eee', paddingBottom: '10px' }}>
+                        My Exams
+                    </h2>
+
+                    {loading ? (
+                        <p>Loading exams...</p>
+                    ) : exams.length === 0 ? (
+                        <div style={{ textAlign: 'center', padding: '40px', color: '#888' }}>
+                            <p>You have no assigned exams at the moment.</p>
+                            <p style={{ fontSize: '0.9rem', marginTop: '10px' }}>
+                                Please contact your trainer to get assigned to an exam.
+                            </p>
+                        </div>
+                    ) : (
+                        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(300px, 1fr))', gap: '20px' }}>
+                            {exams.map(exam => (
+                                <div key={exam._id} style={{
+                                    border: '1px solid #eee',
+                                    borderRadius: '10px',
+                                    padding: '20px',
+                                    transition: 'transform 0.2s',
+                                    backgroundColor: '#ffffff'
+                                }}>
+                                    <h3 style={{ fontSize: '1.2rem', marginBottom: '10px' }}>{exam.title}</h3>
+                                    <p style={{ fontSize: '0.9rem', color: '#666', marginBottom: '15px' }}>
+                                        {exam.subject} • {exam.duration} mins
+                                    </p>
+                                    <Link to={`/take-exam/${exam._id}`} style={{
+                                        display: 'block',
+                                        textAlign: 'center',
+                                        background: '#667eea',
+                                        color: 'white',
+                                        padding: '10px',
+                                        borderRadius: '6px',
+                                        textDecoration: 'none',
+                                        fontWeight: '600'
+                                    }}>
+                                        Start Exam
+                                    </Link>
+                                </div>
+                            ))}
+                        </div>
+                    )}
+                </div>
+
+
             </div>
-        </div>
         </div>
     );
 };

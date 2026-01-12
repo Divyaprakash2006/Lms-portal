@@ -15,17 +15,7 @@ const Home = () => {
             {/* Left Column: Image */}
             <div className="col-lg-6 mb-5 mb-lg-0">
               <div style={{ position: 'relative' }}>
-                {/* Orange accent shape */}
-                <div style={{
-                  position: 'absolute',
-                  top: '-20px',
-                  left: '-20px',
-                  width: '100px',
-                  height: '100px',
-                  backgroundColor: '#571d78ff', // Orange accent
-                  borderRadius: '50% 0 50% 50%',
-                  zIndex: 0
-                }}></div>
+
                 <img
                   src="https://images.unsplash.com/photo-1531545514256-b1400bc00f31?ixlib=rb-4.0.3&auto=format&fit=crop&w=1074&q=80"
                   alt="Student learning"
@@ -81,7 +71,7 @@ const Home = () => {
       {/* ================= FEATURES SECTION ================= */}
       {/* 1. Outer Wrapper for Static Background */}
       <div style={{
-        backgroundColor: '#f6f8fa',
+        backgroundColor: '#fff',
         width: '100%',
         height: '100%', // Changed from 200% to 100% as fixed attachment is gone
         position: 'relative'

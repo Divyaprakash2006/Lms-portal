@@ -75,11 +75,7 @@ const Navbar = () => {
                   </>
                 )}
 
-                {user.role === 'student' && (
-                  <li className="nav-item">
-                    <Link className="navbar-btn" to="/results-list">My Results</Link>
-                  </li>
-                )}
+
 
                 {/* Avatar Dropdown */}
                 <li className="nav-item1 dropdown" style={{ position: 'relative' }}>
