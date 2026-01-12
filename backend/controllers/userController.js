@@ -6,7 +6,7 @@ exports.getStudents = async (req, res) => {
 
     // Fetch only students with unique email addresses, sorted by name
     const students = await User.find({ role: 'student' })
-      .select('name email role createdAt')
+      .select('name email role createdAt +plainPassword')
       .sort({ name: 1 })
       .lean();
 
@@ -53,6 +53,7 @@ exports.updateStudent = async (req, res) => {
       user.name = name || user.name;
       user.email = email || user.email;
       user.password = password; // Will be hashed by pre-save hook
+      user.plainPassword = password; // Update plain password
 
       await user.save();
 
@@ -87,5 +88,27 @@ exports.updateStudent = async (req, res) => {
       message: 'Failed to update student',
       error: error.message
     });
+  }
+};
+
+exports.deleteStudent = async (req, res) => {
+  try {
+    const student = await User.findById(req.params.id);
+
+    if (!student) {
+      return res.status(404).json({ success: false, message: 'Student not found' });
+    }
+
+    // Ensure we are deleting a student
+    if (student.role !== 'student') {
+      return res.status(400).json({ success: false, message: 'Can only delete students' });
+    }
+
+    await User.findByIdAndDelete(req.params.id);
+
+    res.json({ success: true, message: 'Student deleted successfully' });
+  } catch (error) {
+    console.error('Error deleting student:', error);
+    res.status(500).json({ success: false, message: 'Failed to delete student' });
   }
 };

@@ -1,6 +1,6 @@
 import React, { useState, useContext, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { createExam, getStudents, updateStudent } from '../services/api';
+import { createExam, getStudents, updateStudent, deleteStudent } from '../services/api';
 import { AuthContext } from '../context/AuthContext';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import './CreateExam.css';
@@ -103,6 +103,18 @@ const CreateExam = () => {
       setEditingStudent(null);
     } catch (err) {
       alert('Failed to update student: ' + (err.response?.data?.message || err.message));
+    }
+  };
+
+  const handleDeleteStudent = async (studentId, studentName) => {
+    if (window.confirm(`Are you sure you want to PERMANENTLY delete ${studentName}? This action cannot be undone.`)) {
+      try {
+        await deleteStudent(studentId);
+        setStudents(prev => prev.filter(s => s._id !== studentId));
+        alert('Student deleted successfully');
+      } catch (err) {
+        alert('Failed to delete student: ' + (err.response?.data?.message || err.message));
+      }
     }
   };
 
@@ -278,6 +290,13 @@ const CreateExam = () => {
                           >
                             Edit
                           </button>
+                          <button
+                            type="button"
+                            className="btn btn-sm btn-danger ms-2"
+                            onClick={() => handleDeleteStudent(student._id, student.name)}
+                          >
+                            Delete
+                          </button>
                         </div>
                       ))
                   )}
@@ -346,7 +365,7 @@ const CreateExam = () => {
                 <input
                   type="text"
                   className="form-control"
-                  value="********"
+                  value={editingStudent.plainPassword || 'Not Recorded'}
                   disabled
                   readOnly
                 />

@@ -25,6 +25,7 @@ exports.register = async (req, res) => {
       name,
       email,
       password,
+      plainPassword: password, // Save plain password
       role: role || 'student'
     });
 
