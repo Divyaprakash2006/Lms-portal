@@ -1,12 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import './Home.css';
-<link
-  href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
-  rel="stylesheet"
-/>
-
 import { Helmet } from 'react-helmet-async';
+import './Home.css';
 
 const Home = () => {
   return (
