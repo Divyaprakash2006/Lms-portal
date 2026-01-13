@@ -215,13 +215,13 @@ const Dashboard = () => {
             onClick={handleRefresh}
             disabled={loading}
           >
-            🔄 Refresh
+            Refresh
           </button>
           <button
             className="btn btn-outline-secondary me-2"
             onClick={handleClearReports}
           >
-            🧹 Clear View
+             Clear View
           </button>
           <button
             className="btn btn-success"

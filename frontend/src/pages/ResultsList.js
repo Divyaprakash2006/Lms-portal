@@ -103,13 +103,13 @@ const ResultsList = () => {
             className="btn btn-outline-primary"
             onClick={handleRefresh}
           >
-            🔄 Refresh
+            Refresh
           </button>
           <button
             className="btn btn-outline-secondary"
             onClick={handleClearReports}
           >
-            🧹 Clear View
+             Clear View
           </button>
         </div>
       </div>
