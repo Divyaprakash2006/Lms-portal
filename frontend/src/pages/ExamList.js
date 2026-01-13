@@ -55,21 +55,10 @@ const ExamList = () => {
     <div className="exam-list-page">
       <div style={{ maxWidth: 1200, margin: '0 auto', padding: '40px 20px' }}>
         <h1 style={{ textAlign: 'center', fontSize: '2.5rem', marginBottom: 50 }}>
-          Available Exams
+          Available Assessments
         </h1>
 
-        {user.role === 'student' ? (
-          <div style={{
-            textAlign: 'center',
-            padding: '60px 20px',
-            background: 'white',
-            borderRadius: 15,
-            boxShadow: '0 5px 20px rgba(0,0,0,0.1)'
-          }}>
-            <h3><i className="bi bi-lock-fill  me-2"></i>Access Restricted</h3>
-            
-          </div>
-        ) : exams.length === 0 ? (
+        {exams.length === 0 ? (
           <div
             style={{
               textAlign: 'center',

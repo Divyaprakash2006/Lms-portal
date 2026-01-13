@@ -1,11 +1,29 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AuthContext } from '../context/AuthContext';
+import { getAllExams } from '../services/api';
 import './Navbar.css';
 
 const Navbar = () => {
   const { user, logout } = useContext(AuthContext);
   const navigate = useNavigate();
+  const [hasExams, setHasExams] = useState(false);
+
+  useEffect(() => {
+    if (user?.role === 'student') {
+      getAllExams()
+        .then((response) => {
+          const exams = response.data?.data || [];
+          setHasExams(exams.length > 0);
+        })
+        .catch((err) => {
+          console.error("Failed to check exams", err);
+          setHasExams(false);
+        });
+    } else {
+      setHasExams(true); // Always unlock for non-students
+    }
+  }, [user]);
 
   const handleLogout = () => {
     logout();
@@ -51,12 +69,27 @@ const Navbar = () => {
                     className="navbar-btn"
                     to={user.role === 'student' ? "/student-dashboard" : "/dashboard"}
                   >
-                    Dashboard
+                    {user.role === 'student' ? 'Learning resources' : 'Dashboard'}
                   </Link>
                 </li>
 
                 <li className="nav-item">
-                  <Link className="navbar-btn" to="/exams">Exams</Link>
+                  {user.role === 'student' ? (
+                    hasExams ? (
+                      <Link className="navbar-btn" to="/exams">Assessments</Link>
+                    ) : (
+                      <span
+                        className="navbar-btn"
+                        style={{ cursor: 'not-allowed', opacity: 0.8 }}
+                        title="No assessments assigned"
+                      >
+                        <i className="bi bi-lock-fill me-2"></i>
+                        Assessments
+                      </span>
+                    )
+                  ) : (
+                    <Link className="navbar-btn" to="/exams">Assessments</Link>
+                  )}
                 </li>
 
                 <li className="nav-item">
@@ -66,7 +99,7 @@ const Navbar = () => {
                 {user.role === 'trainer' && (
                   <>
                     <li className="nav-item">
-                      <Link className="navbar-btn" to="/create-exam">Create Exam</Link>
+                      <Link className="navbar-btn" to="/create-exam">Create Assessment</Link>
                     </li>
 
                     <li className="nav-item">
