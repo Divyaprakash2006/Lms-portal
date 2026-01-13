@@ -31,7 +31,7 @@ const Navbar = () => {
   };
 
   return (
-    <nav className="navbar navbar-expand-lg navbar-dark fixed-top custom-navbar ">
+    <nav className="navbar navbar-expand-lg navbar-light fixed-top custom-navbar ">
       <div className="container">
         {/* Brand */}
         <Link
@@ -41,7 +41,7 @@ const Navbar = () => {
           <img
             src="/logo1.svg"
             alt="Nexus Logo"
-            style={{ width: '215px', height: '250px', top: '-90px', left: '20px', position: 'fixed' }}
+            className="navbar-logo"
           />
         </Link>
 

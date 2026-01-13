@@ -42,7 +42,7 @@
   text-decoration: none;
   overflow: hidden;
   z-index: 1;
-  font-family:"Roboto", Helvetica, Arial, sans-serif;
+  font-family: "Roboto", Helvetica, Arial, sans-serif;
   border-radius: 8px;
   transition: color 0.3s ease;
 }
@@ -104,4 +104,62 @@
   font-weight: 700;
   letter-spacing: 1px;
   color: #212529;
+}
+
+/* Responsive Logo and Navbar Styles */
+.navbar-logo {
+  height: 50px;
+  width: auto;
+  object-fit: contain;
+  transition: all 0.3s ease;
+  margin-right: 5px;
+}
+
+@media (min-width: 992px) {
+  .navbar-logo {
+    width: 215px;
+    height: 250px;
+    position: absolute;
+    top: -100px;
+    left: 0px;
+  }
+
+  .custom-navbar .container {
+    position: relative;
+  }
+}
+
+@media (max-width: 991px) {
+  .custom-navbar {
+    height: auto !important;
+    min-height: 70px;
+    padding: 10px 0;
+  }
+
+  .navbar-collapse {
+    background-color: white;
+    padding: 1rem;
+    border-radius: 0 0 8px 8px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+    margin-top: 10px;
+    max-height: calc(100vh - 80px);
+    /* prevent overflow */
+    overflow-y: auto;
+  }
+
+  .navbar-btn {
+    width: 100%;
+    margin-bottom: 0.5rem;
+    text-align: left;
+  }
+
+  .dropdown-menu {
+    position: static !important;
+    float: none;
+    width: auto !important;
+    margin-top: 0;
+    background-color: transparent;
+    border: 0;
+    box-shadow: none;
+  }
 }

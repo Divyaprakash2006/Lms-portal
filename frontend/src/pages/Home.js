@@ -1,5 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
+import { DotLottieReact } from '@lottiefiles/dotlottie-react';
 
 import './Home.css';
 
@@ -15,12 +16,11 @@ const Home = () => {
             {/* Left Column: Image */}
             <div className="col-lg-6 mb-5 mb-lg-0">
               <div style={{ position: 'relative' }}>
-
-                <img
-                  src="https://media.istockphoto.com/id/2105091005/photo/young-student-taking-notes-while-e-learning-on-laptop-at-the-university.jpg?s=612x612&w=0&k=20&c=5AoTWNFmHm-HeQfx0FzB3LPm3MKQXgokYelEvmC_47E="
-                  alt="Student learning"
-                  className="img-fluid rounded shadow-lg"
-                  style={{ position: 'relative', zIndex: 1, width: '100%', objectFit: 'cover' }}
+                <DotLottieReact
+                  src="https://lottie.host/5a5e8947-b91d-4190-9cb7-d92dc1d4c6fb/RjuOeA0mwa.lottie"
+                  loop
+                  autoplay
+                  style={{ width: '100%', height: 'auto', transform: 'scale(2.0)' }}
                 />
               </div>
             </div>

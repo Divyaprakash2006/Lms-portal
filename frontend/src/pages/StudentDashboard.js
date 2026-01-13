@@ -402,7 +402,7 @@ const StudentDashboard = () => {
                 {/* My Assessments Section */}
                 {/* Learning Resources Section */}
                 <div className="mb-4">
-                    <h2 className="h3 mb-4 text-dark border-bottom pb-3">Learning Resources</h2>
+                    <h2 className="h3 mb-4 text-dark  pb-3">Learning Resources</h2>
                     <div className="row g-4">
                         {learningResources.map(resource => (
                             <div key={resource.id} className="col-md-6 col-lg-3">
