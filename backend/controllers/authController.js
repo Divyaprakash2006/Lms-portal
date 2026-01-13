@@ -37,7 +37,8 @@ exports.register = async (req, res) => {
         _id: user._id,
         name: user.name,
         email: user.email,
-        role: user.role
+        role: user.role,
+        isSubscribed: user.isSubscribed
       }
     });
   } catch (error) {
@@ -84,7 +85,8 @@ exports.login = async (req, res) => {
         _id: user._id,
         name: user.name,
         email: user.email,
-        role: user.role
+        role: user.role,
+        isSubscribed: user.isSubscribed
       }
     });
   } catch (error) {

@@ -36,6 +36,8 @@ export const createStudent = (data) => API.post('/users/students', data);
 export const getStudentById = (id) => API.get(`/users/${id}`);
 export const deleteStudent = (id) => API.delete(`/users/${id}`);
 export const updateStudent = (id, data) => API.put(`/users/${id}`, data);
+export const subscribeUser = (id, plan) => API.put(`/users/subscribe/${id}`, { plan });
+export const trackVideoView = (id) => API.post(`/users/video-view/${id}`);
 
 /* ======================
    EXAM APIs

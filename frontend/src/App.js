@@ -9,6 +9,7 @@ import Login from './pages/Login';
 import Dashboard from './pages/Dashboard';
 import ExamList from './pages/ExamList';
 import CreateExam from './pages/CreateExam';
+import SubscriptionPage from './pages/SubscriptionPage';
 import ExamDetails from './pages/ExamDetails';
 import TakeExam from './pages/TakeExam';
 import Results from './pages/Results';
@@ -53,6 +54,15 @@ function AppContent() {
               element={
                 <ProtectedRoute>
                   <StudentDashboard />
+                </ProtectedRoute>
+              }
+            />
+
+            <Route
+              path="/subscription"
+              element={
+                <ProtectedRoute>
+                  <SubscriptionPage />
                 </ProtectedRoute>
               }
             />

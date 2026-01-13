@@ -1,15 +1,21 @@
 import React, { useState, useEffect, useContext } from 'react';
 
 import axios from 'axios';
+
 import { AuthContext } from '../context/AuthContext';
+import { useNavigate } from 'react-router-dom';
+import { trackVideoView } from '../services/api';
 import 'bootstrap/dist/css/bootstrap.min.css';
 
 const StudentDashboard = () => {
     const { user } = useContext(AuthContext);
+    const navigate = useNavigate();
 
     const [trendingVideos, setTrendingVideos] = useState([]);
     const [videosLoading, setVideosLoading] = useState(true);
     const [selectedVideo, setSelectedVideo] = useState(null);
+    const [showSubscriptionModal, setShowSubscriptionModal] = useState(false);
+    const [modalMessage, setModalMessage] = useState('This video is part of our premium learning collection.');
 
     // YouTube API Configuration
     const YOUTUBE_CONFIG = {
@@ -294,8 +300,28 @@ const StudentDashboard = () => {
         fetchTrendingVideos(randomTopic);
     };
 
-    const handleVideoClick = (video) => {
-        setSelectedVideo(video);
+    const handleVideoClick = async (video) => {
+        if (!user) return;
+
+        try {
+            const res = await trackVideoView(user._id);
+            if (res.data.success && res.data.allowed) {
+                setSelectedVideo(video);
+            } else {
+                setModalMessage('You have reached your daily limit of free videos. Please subscribe for specific plans.');
+                setShowSubscriptionModal(true);
+            }
+        } catch (error) {
+            console.error('Error tracking video:', error);
+            // Default to allow if server error (or block, depends on policy)
+            // For better UX during error, maybe allow or show generic error
+            setSelectedVideo(video);
+        }
+    };
+
+    const handleSubscribe = () => {
+        setShowSubscriptionModal(false);
+        navigate('/subscription');
     };
 
     const closeVideoModal = () => {
@@ -564,6 +590,37 @@ const StudentDashboard = () => {
                                 allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                                 allowFullScreen
                             ></iframe>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Subscription Modal */}
+            {showSubscriptionModal && (
+                <div className="modal-overlay" onClick={() => setShowSubscriptionModal(false)}>
+                    <div className="modal-content-custom bg-white p-5 rounded text-center" style={{ maxWidth: '500px' }} onClick={e => e.stopPropagation()}>
+                        <div className="mb-4">
+                            <i className="bi bi-star-fill text-warning" style={{ fontSize: '3rem' }}></i>
+                        </div>
+                        <h2 className="mb-3">Premium Content</h2>
+                        <p className="text-muted mb-4">
+                            This video is part of our premium learning collection.
+                            Please subscribe to access unlimited educational content.
+                        </p>
+
+                        <div className="d-grid gap-2">
+                            <button
+                                className="btn btn-primary btn-lg"
+                                onClick={handleSubscribe}
+                            >
+                                Subscribe Now
+                            </button>
+                            <button
+                                className="btn btn-outline-secondary"
+                                onClick={() => setShowSubscriptionModal(false)}
+                            >
+                                Maybe Later
+                            </button>
                         </div>
                     </div>
                 </div>

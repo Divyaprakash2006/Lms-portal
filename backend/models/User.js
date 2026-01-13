@@ -36,6 +36,21 @@ const userSchema = new mongoose.Schema(
       default: 'student'
     },
 
+    isSubscribed: {
+      type: Boolean,
+      default: false
+    },
+
+    plan: {
+      type: String, // 'active', 'medium', 'pro'
+      default: 'active'
+    },
+
+    videoUsage: {
+      date: { type: String }, // ISO Date string YYYY-MM-DD
+      count: { type: Number, default: 0 }
+    },
+
     // ✅ OPTIONAL: Track exams assigned to student
     assignedExams: [
       {

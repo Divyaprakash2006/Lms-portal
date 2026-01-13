@@ -164,3 +164,65 @@ exports.createStudent = async (req, res) => {
     });
   }
 };
+
+exports.subscribe = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+
+    user.isSubscribed = true;
+    user.plan = req.body.plan || 'medium'; // Default to medium if not specified
+    await user.save();
+
+    res.json({
+      success: true,
+      data: user,
+      message: 'Subscription successful'
+    });
+  } catch (error) {
+    console.error('Subscription error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to subscribe'
+    });
+  }
+};
+
+exports.trackVideoView = async (req, res) => {
+  try {
+    const user = await User.findById(req.params.id);
+    if (!user) {
+      return res.status(404).json({ success: false, message: 'User not found' });
+    }
+
+    const today = new Date().toISOString().split('T')[0];
+
+    // Reset count if new day OR if user has no videoUsage data
+    if (!user.videoUsage || user.videoUsage.date !== today) {
+      user.videoUsage = { date: today, count: 0 };
+    }
+
+    // Check limit for 'active' plan
+    // Active plan users get 2 free videos daily
+    const isBasicPlan = user.plan === 'active' || user.plan === 'basic' || !user.plan;
+
+    // Allow if:
+    // 1. Not basic plan (Medium/Pro)
+    // 2. OR count < 2 (Limit for basic)
+
+    if (!isBasicPlan || user.videoUsage.count < 2) {
+      user.videoUsage.count += 1;
+      await user.save();
+      return res.json({ success: true, allowed: true, count: user.videoUsage.count });
+    } else {
+      return res.json({ success: true, allowed: false, message: 'Daily limit reached' });
+    }
+
+  } catch (error) {
+    console.error('Track video view error:', error);
+    res.status(500).json({ success: false, message: 'Server error' });
+  }
+};
